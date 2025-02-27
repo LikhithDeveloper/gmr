@@ -1,0 +1,90 @@
+.first-page {
+  width: 100%;
+  height: 100vh;
+  padding-top: 60px;
+  /* background-color: red; */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* position: relative; */
+}
+
+.first-page > div {
+  width: 50%;
+  height: 100%;
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.head-para {
+  animation: animation3;
+  animation-duration: 1s;
+  animation-iteration-count: 1;
+}
+
+.design {
+  position: fixed;
+  width: 800px;
+  height: 700px;
+  background-color: #efe6ff;
+  z-index: -1;
+  top: -90px;
+  left: -100px;
+  border-bottom-right-radius: 50%;
+  border-top-right-radius: 50%;
+  rotate: 40deg;
+  animation: animation1;
+  animation-duration: 1s;
+  animation-iteration-count: 1;
+}
+
+.first-btn {
+  border-radius: 5px;
+  padding: 7px 20px;
+  border: 1px solid rgb(26, 105, 240);
+  cursor: pointer;
+  animation: animation3;
+  animation-duration: 1s;
+  animation-iteration-count: 1;
+}
+
+.right-design {
+  position: fixed;
+  width: 400px;
+  height: 500px;
+  background-color: #8e4dff;
+  z-index: -1;
+  right: 0;
+  clip-path: polygon(100% 0, 0% 100%, 100% 100%);
+  animation: animation2;
+  animation-duration: 1s;
+  animation-iteration-count: 1;
+}
+
+@keyframes animation1 {
+  0% {
+    top: -600px;
+    left: -500px;
+  }
+  100% {
+    top: -90px;
+    left: -100px;
+  }
+}
+@keyframes animation2 {
+  0% {
+    right: -200px;
+  }
+  100% {
+    right: 0;
+  }
+}
+@keyframes animation3 {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}

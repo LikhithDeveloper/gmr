@@ -1,0 +1,120 @@
+.register {
+  width: 100%;
+  height: 100vh;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* background-image: url("../../assets/colorful-blurred-windows-7-gradient-wallpaper-preview.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  padding-top: 50px; */
+}
+
+.registration-form {
+  width: 370px;
+  height: 530px;
+  background-color: rgba(255, 255, 255, 0.222);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.148);
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.068),
+    5px 5px 20px rgba(0, 0, 0, 0.068);
+  border-radius: 7px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding-bottom: 20px;
+}
+
+#email {
+  border: 1px solid rgba(0, 0, 0, 0.171);
+  background-color: rgba(255, 255, 255, 0.178);
+  border-radius: 5px;
+  padding: 5px 10px;
+  width: 270px;
+}
+
+#email:focus {
+  border: 1px solid blue;
+  outline: none;
+}
+#status {
+  border: 1px solid rgba(0, 0, 0, 0.171);
+  background-color: rgba(255, 255, 255, 0.178);
+  border-radius: 5px;
+  padding: 5px 10px;
+  width: 270px;
+}
+
+#status:focus {
+  border: 1px solid blue;
+  outline: none;
+}
+
+#phone {
+  border: 1px solid rgba(0, 0, 0, 0.171);
+  background-color: rgba(255, 255, 255, 0.178);
+  border-radius: 5px;
+  padding: 5px 10px;
+  width: 270px;
+}
+
+#phone:focus {
+  border: 1px solid blue;
+  outline: none;
+}
+
+#password {
+  border: 1px solid rgba(0, 0, 0, 0.171);
+  background-color: rgba(255, 255, 255, 0.178);
+  border-radius: 5px;
+  padding: 5px 10px;
+  width: 270px;
+}
+#password:focus {
+  border: 1px solid blue;
+  outline: none;
+}
+
+#confirm-password {
+  border: 1px solid rgba(0, 0, 0, 0.171);
+  background-color: rgba(255, 255, 255, 0.178);
+  border-radius: 5px;
+  padding: 5px 10px;
+  width: 270px;
+}
+
+#confirm-password:focus {
+  border: 1px solid blue;
+  outline: none;
+}
+
+#register-button {
+  width: 270px;
+  padding: 5px 0;
+  border: none;
+  background-color: rgba(0, 0, 255, 0.479);
+  border-radius: 5px;
+  transition: 0.3s;
+  color: white;
+}
+
+#register-button:hover {
+  background-color: rgb(26, 105, 240);
+}
+h5 {
+  position: relative;
+  cursor: pointer;
+}
+
+h5::after {
+  content: "";
+  width: 100%;
+  height: 0.5px;
+  position: absolute;
+  background-color: black;
+  left: 0px;
+  bottom: -2px;
+}
