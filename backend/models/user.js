@@ -25,16 +25,16 @@ const user = new mongoose.Schema({
   },
   imageUrl: {
     type: String,
-    required: false, // URL for profile image
+    required: false,
   },
   bio: {
     type: String,
-    required: false, // Short biography or about section
+    required: false,
   },
   socialLinks: {
     type: Map,
     of: String,
-    required: false, // Social media links like LinkedIn, Twitter, etc.
+    required: false,
   },
   messagesProfiles: {
     type: [String],

@@ -19,33 +19,48 @@ app.use(
   cors({
     origin: "http://localhost:5173", // Change to your frontend URL
     credentials: true, // Allow cookies/session handling
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
   })
 );
 
 const server = http.createServer(app); // Already created server
-const io = new Server(server, {
+// const io = new Server(server, {
+//   cors: {
+//     origin: "http://localhost:5173", // Ensure frontend is connecting to this
+//     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+//   },
+// });
+const socketIo = require("socket.io");
+const io = socketIo(server, {
   cors: {
-    origin: "http://localhost:5173", // Ensure frontend is connecting to this
+    origin: "http://localhost:5173",
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-  },
+  }, // Allow frontend access
 });
 
 io.on("connection", (socket) => {
   console.log("A user connected:", socket.id);
 
-  // Listen for incoming messages
-  socket.on("sendMessage", (message) => {
-    console.log("Message received:", message);
-    io.emit("message", message); // Broadcast message to all clients
+  socket.on("joinRoom", ({ senderId, receiverId }) => {
+    const roomId = [senderId, receiverId].sort().join("_");
+    socket.join(roomId);
+    console.log(`${senderId} joined room ${roomId}`);
   });
 
-  // Handle disconnection
+  socket.on("sendMessage", (data) => {
+    const roomId = [data.senderId, data.receiverId].sort().join("_");
+    io.to(roomId).emit("receiveMessage", {
+      senderId: data.senderId,
+      text: data.message,
+    });
+  });
+
   socket.on("disconnect", () => {
-    console.log("User disconnected:", socket.id);
+    console.log("A user disconnected");
   });
 });
-app.use(bodyParser.json()); // Parse JSON bodies
-app.use(cookieParser()); // Parse cookies
+app.use(bodyParser.json());
+app.use(cookieParser());
 
 // Database connectivity
 mongoose
@@ -57,7 +72,7 @@ mongoose
   .catch((err) => console.log(err));
 
 // Models
-const Message = require("./models/test");
+// const Message = require("./models/test");
 const User = require("./models/user");
 const Alumni = require("./models/alumini");
 
@@ -261,12 +276,11 @@ app.post("/api/messages/send", async (req, res) => {
       senderType,
       receiverId,
       receiverType,
-      message, // Ensure this is 'message'
+      text: message, // Ensure this is 'message'
     });
 
-    console.log("Message to Save: ", newMessage); // Log the message being saved
+    console.log("Message to Save: ", newMessage);
 
-    // Save the message to the database
     await newMessage.save();
 
     res
@@ -282,12 +296,12 @@ app.get("/api/messages/:senderId/:receiverId", async (req, res) => {
   try {
     const { senderId, receiverId } = req.params;
 
-    const messages = await Message.find({
+    const messages = await Chat.find({
       $or: [
         { senderId, receiverId },
-        { senderId: receiverId, receiverId: senderId }, // Include reverse messages
+        { senderId: receiverId, receiverId: senderId },
       ],
-    }).sort({ timestamp: 1 }); // Sort by timestamp in ascending order
+    }).sort({ timestamp: 1 });
 
     res.status(200).json({ data: messages });
   } catch (error) {
@@ -296,7 +310,6 @@ app.get("/api/messages/:senderId/:receiverId", async (req, res) => {
   }
 });
 
-// Route to delete a message by ID
 app.delete("/api/messages/delete/:messageId", async (req, res) => {
   try {
     const { messageId } = req.params;
@@ -317,7 +330,6 @@ app.delete("/api/messages/delete/:messageId", async (req, res) => {
   }
 });
 
-// mentors apis
 app.get("/mentors", async (req, res) => {
   try {
     const mentors = await Alumni.find();
@@ -338,17 +350,13 @@ app.get("/mentors/:id", async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Find the user by ID
     const user = await User.findOne({ id: id });
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
 
-    // Extract mentor IDs from messagesProfiles
     const mentorIds = user.messagesProfiles;
-
-    // Fetch mentor data using the IDs
     const mentors = await Alumni.find({ id: { $in: mentorIds } });
     console.log(mentors);
 
@@ -363,13 +371,35 @@ app.get("/mentors/:id", async (req, res) => {
   }
 });
 
-// updation of user and alumini
+app.get("/users/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await Alumni.findOne({ id: id });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const mentorIds = user.messagesProfiles;
+    const mentors = await User.find({ id: { $in: mentorIds } });
+    console.log(mentors);
+
+    res.status(200).json({
+      success: true,
+      message: "Mentors data retrieved successfully",
+      mentors,
+    });
+  } catch (error) {
+    console.error("Error fetching mentors:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 app.patch("/updateuserchat/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const { messagesProfiles } = req.body;
 
-    // Ensure messagesProfiles is an array
     if (!Array.isArray(messagesProfiles)) {
       return res.status(400).json({
         success: false,
@@ -405,8 +435,6 @@ app.patch("/updatealuminchat/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const { messagesProfiles } = req.body;
-
-    // Ensure messagesProfiles is an array
     if (!Array.isArray(messagesProfiles)) {
       return res.status(400).json({
         success: false,
@@ -416,7 +444,7 @@ app.patch("/updatealuminchat/:id", async (req, res) => {
 
     const updatedUser = await Alumni.findOneAndUpdate(
       { id: id },
-      { $addToSet: { messagesProfiles: { $each: messagesProfiles } } }, // Add unique profiles
+      { $addToSet: { messagesProfiles: { $each: messagesProfiles } } },
       { new: true }
     );
 
@@ -438,7 +466,111 @@ app.patch("/updatealuminchat/:id", async (req, res) => {
   }
 });
 
-// Start server
+const Club = require("./models/clubs");
+
+app.post("/clubs", async (req, res) => {
+  try {
+    const { club, mentor, description, users, meetDate } = req.body;
+    const id = uuidv4();
+    const newClub = new Club({
+      id: id,
+      club,
+      mentor,
+      description,
+      link: users,
+      date: meetDate,
+    });
+    await newClub.save();
+    res
+      .status(201)
+      .json({ message: "Club created successfully", club: newClub });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error creating club", error: error.message });
+  }
+});
+
+app.get("/clubs", async (req, res) => {
+  try {
+    const clubs = await Club.find();
+    res.status(200).json(clubs);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error fetching clubs", error: error.message });
+  }
+});
+
+app.get("/clubs/:id", async (req, res) => {
+  try {
+    const club = await Club.findOne({ id: req.params.id });
+    if (!club) {
+      return res.status(404).json({ message: "Club not found" });
+    }
+    res.status(200).json(club);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error fetching club", error: error.message });
+  }
+});
+
+app.patch("/club/:id/:user", async (req, res) => {
+  const { id, user } = req.params; // Get club id and user id from params
+  const users = [user]; // Wrapping the user into an array to use `$addToSet`
+
+  console.log("Club ID:", id);
+  console.log("User ID:", user);
+
+  try {
+    // Find club by ID and update the users array
+    const club = await Club.findOneAndUpdate(
+      { id }, // Find club by custom 'id' field
+      {
+        $addToSet: { users: { $each: users } }, // Add the user to the users array without duplicates
+      },
+      { new: true, runValidators: true } // Return the updated document
+    );
+
+    if (!club) {
+      return res.status(404).json({ message: "Club not found" });
+    }
+
+    // Return the updated club object
+    res.status(200).json(club);
+  } catch (error) {
+    console.error("Error:", error.message);
+    res.status(400).json({ message: error.message });
+  }
+});
+
+// mentor update
+
+// PATCH route to update fields except email, password, and phone
+app.patch("/alumni/:id", async (req, res) => {
+  const { id } = req.params;
+  const { rating } = req.body; // Expecting 'rating' field to be passed
+
+  try {
+    // Find the alumni by ID and update the rating
+    const alumni = await Alumni.findById(id);
+
+    if (!alumni) {
+      return res.status(404).json({ message: "Alumni not found" });
+    }
+
+    // Update the review field with the new rating
+    alumni.review = rating;
+
+    await alumni.save();
+
+    res.status(200).json({ success: true, alumni });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+});
+
 server.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });

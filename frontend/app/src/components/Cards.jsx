@@ -6,9 +6,10 @@ import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { useParams } from "react-router-dom";
+import Rating from "@mui/material/Rating";
 
 const ImgMediaCard = ({ image }) => {
-  const { img, email, mentorid, userId } = image; // Ensure 'image' contains the right data
+  const { img, email, mentorid, userId, toggleFormVisibility } = image; // Ensure 'image' contains the right data
   const { id } = useParams(); // Get 'id' from the URL parameters
 
   async function updateUserChat(userId, mentorid) {
@@ -94,6 +95,10 @@ const ImgMediaCard = ({ image }) => {
       console.error("Network error:", error);
     }
   }
+  function set() {
+    setFeed(mentorid);
+    toggleFormVisibility();
+  }
 
   return (
     <Card sx={{ maxWidth: 345 }}>
@@ -103,15 +108,24 @@ const ImgMediaCard = ({ image }) => {
           {name}
         </Typography>
         <Typography variant="body2" sx={{ color: "text.secondary" }}>
-          Lizards are a widespread group of squamate reptiles, with over 6,000
-          species, ranging across all continents except Antarctica.
+          Likhith is a passionate web developer and AI enthusiast pursuing a
+          BTech in Computer Science with a focus on AI & ML at AITAM.
         </Typography>
+        <Rating
+          name="simple-uncontrolled"
+          onChange={(event, newValue) => {
+            console.log(newValue);
+          }}
+          defaultValue={4}
+        />
       </CardContent>
       <CardActions>
         <Button size="small" onClick={() => updateUserChat(userId, mentorid)}>
           Reach Me
         </Button>
-        <Button size="small">Know Me</Button>
+        <Button size="small" onClick={set}>
+          Know Me
+        </Button>
       </CardActions>
     </Card>
   );

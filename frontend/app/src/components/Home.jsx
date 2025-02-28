@@ -70,7 +70,7 @@ const Home = () => {
         <p style={{ fontSize: "25px" }}>
           Building a Stronger Community Together
         </p>
-        <button className="home-btn">Find Interships</button>
+        <button className="home-btn">Find Mentors</button>
       </div>
       <section id="features" className="features" ref={featureRef}>
         <h2>Features</h2>

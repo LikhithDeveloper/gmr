@@ -3,6 +3,7 @@ import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import LoginRoundedIcon from "@mui/icons-material/LoginRounded";
 import PersonAddAltRoundedIcon from "@mui/icons-material/PersonAddAltRounded";
 import LogoutIcon from "@mui/icons-material/Logout";
+import EmailIcon from "@mui/icons-material/Email";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { contextApi } from "./store/apis";
 import { useContext } from "react";
@@ -10,6 +11,7 @@ import gmr from "./images/Picsart_25-02-28_00-17-32-366-removebg-preview.png";
 
 export const Navbar1 = () => {
   const navigation = useNavigate();
+  const { name } = useParams();
 
   return (
     <>
@@ -77,17 +79,21 @@ export const Navbar2 = ({ data }) => {
           <Link className="link" to="/products">
             JOBS
           </Link>
-          <Link className="link" to="/services">
+          <Link className="link" to={`/clubs/${name}/${id}`}>
             CLUBS
           </Link>
-          <Link className="link" to={`/mentor/${name}/${id}`}>
-            MENTORS
-          </Link>
-          <AccountCircleRoundedIcon
+          {name == "student" ? (
+            <Link className="link" to={`/mentor/${name}/${id}`}>
+              MENTORS
+            </Link>
+          ) : null}
+          {name == "alumini" ? <Link className="link">PROFILE</Link> : null}
+
+          <EmailIcon
             onClick={() => navigate(`/profile/${name}/${id}`)}
             className="profile-icon"
             style={{ fontSize: "30px", cursor: "pointer" }}
-          ></AccountCircleRoundedIcon>
+          ></EmailIcon>
           <button onClick={handleLogout}>
             <LogoutIcon style={{ fontSize: "18px", marginRight: "7px" }} />
             Logout

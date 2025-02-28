@@ -8,6 +8,7 @@ import { useParams } from "react-router-dom";
 const Mentor = () => {
   const [mentors, setMentors] = useState([]);
   const { id } = useParams();
+  const [feed, setFeed] = useState();
 
   useEffect(() => {
     async function fetchMentorData() {
@@ -25,6 +26,11 @@ const Mentor = () => {
 
     fetchMentorData();
   }, []);
+
+  function handelFeedback(e) {
+    e.preventDefault();
+    const dataid = e.target.rate.value;
+  }
 
   return (
     <>
@@ -53,10 +59,31 @@ const Mentor = () => {
                 email: mentor.email,
                 mentorid: mentor.id,
                 userId: id,
+                setFeed,
               }}
             />
           ))
         )}
+        <div
+          className="feed-form"
+          style={{
+            width: "280px",
+            height: "100px",
+            background: "white",
+            position: "absolute",
+            top: "300px",
+            left: "35%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexDirection: "column",
+          }}
+        >
+          <form onSubmit={() => handelFeedback()}>
+            <input name="rate" type="number"></input>
+            <button type="submit">Submit</button>
+          </form>
+        </div>
       </div>
     </>
   );

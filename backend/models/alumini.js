@@ -9,27 +9,27 @@ const alumniSchema = new mongoose.Schema({
   name: {
     type: String,
     required: false,
-    index: true, // Enables searching by name
+    index: true,
   },
   batch: {
     type: Number,
     required: false,
-    index: true, // Enables filtering by batch
+    index: true,
   },
   company: {
     type: String,
     required: false,
-    index: true, // Enables searching/filtering by company
+    index: true,
   },
   expertise: {
-    type: [String], // Array of skills/expertise
+    type: [String],
     required: false,
-    index: true, // Enables filtering by skills
+    index: true,
   },
   industry: {
     type: String,
     required: false,
-    index: true, // Enables filtering by industry
+    index: true,
   },
   education: {
     type: [
@@ -53,7 +53,7 @@ const alumniSchema = new mongoose.Schema({
     required: false,
   },
   achievements: {
-    type: [String], // List of achievements
+    type: [String],
     required: false,
   },
   email: {
@@ -66,34 +66,30 @@ const alumniSchema = new mongoose.Schema({
     required: false,
   },
   successStory: {
-    type: String, // Alumni success story or featured content
+    type: String,
     required: false,
   },
   password: {
     type: String,
     required: true,
   },
-  status: {
-    type: String,
-    required: true,
-  },
   accept: {
     type: Boolean,
     required: false,
-    default: false, // Default value is false (not accepted)
+    default: false,
   },
   imageUrl: {
     type: String,
-    required: false, // URL for profile image
+    required: false,
   },
   bio: {
     type: String,
-    required: false, // Short biography or about section
+    required: false,
   },
-  socialLinks: {
-    type: Map,
-    of: String,
-    required: false, // Social media links like LinkedIn, Twitter, etc.
+
+  review: {
+    type: Number,
+    required: false,
   },
 
   messagesProfiles: {

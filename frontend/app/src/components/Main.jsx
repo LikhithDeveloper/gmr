@@ -30,7 +30,7 @@ const Main = () => {
               className="first-btn"
               onClick={() => navigate("/signin/alumini")}
             >
-              Alumini
+              Mentor
             </button>
             <button
               className="first-btn"

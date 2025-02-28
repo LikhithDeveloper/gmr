@@ -7,6 +7,7 @@ import Main from "./components/Main";
 import Alumni from "./components/Alumini";
 import io from "socket.io-client";
 import Mentor from "./components/Mentor";
+import Clubs from "./components/Clubs";
 
 const socket = io("http://localhost:3000");
 
@@ -21,6 +22,7 @@ function App() {
           <Route path="/signup" element={<Registration />} />
           <Route path="/profile/:name/:id" element={<Alumni />} />
           <Route path="/mentor/:name/:id" element={<Mentor />} />
+          <Route path="/clubs/:name/:id" element={<Clubs></Clubs>} />
         </Routes>
       </Router>
     </Apis>
